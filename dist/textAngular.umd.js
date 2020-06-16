@@ -10,7 +10,7 @@
     // like Node.
     module.exports = factory(require("rangy"),require("rangy/lib/rangy-selectionsaverestore"));
   } else {
-    root['textAngular'] = factory(rangy);
+    root['textAngular'] = factory(root["rangy"]);
   }
 }(this, function (rangy) {
 
@@ -1032,7 +1032,7 @@ angular.module('textAngularSetup', [])
 @license textAngular
 Author : Austin Anderson
 License : 2013 MIT
-Version 1.5.16
+Version 1.5.17
 
 See README.md or https://github.com/fraywing/textAngular/wiki for requirements and use.
 */
@@ -1043,7 +1043,7 @@ Commonjs package manager support (eg componentjs).
 
 
 "use strict";// NOTE: textAngularVersion must match the Gruntfile.js 'setVersion' task.... and have format v/d+./d+./d+
-var textAngularVersion = 'v1.5.16';   // This is automatically updated during the build process to the current release!
+var textAngularVersion = 'v1.5.17';   // This is automatically updated during the build process to the current release!
 
 
 // IE version detection - http://stackoverflow.com/questions/4169160/javascript-ie-detection-why-not-use-simple-conditional-comments
@@ -2890,6 +2890,7 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
             if(!ngModelOptions.$options) ngModelOptions.$options = {}; // ng-model-options support
 
             var _ensureContentWrapped = function(value) {
+                console.log('ensure content wrapped', value);
                 if (_taBlankTest(value)) return value;
                 var domTest = angular.element("<div>" + value + "</div>");
                 //console.log('domTest.children().length():', domTest.children().length);
@@ -3081,6 +3082,7 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
             // catch DOM XSS via taSanitize
             // Sanitizing both ways is identical
             var _sanitize = function(unsafe){
+                console.log('sanitize content', unsafe);
                 return (ngModel.$oldViewValue = taSanitize(taFixChrome(unsafe, _keepStyles), ngModel.$oldViewValue, _disableSanitizer));
             };
 
@@ -3089,14 +3091,17 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
                 return !_taBlankTest(modelValue || viewValue);
             };
             // parsers trigger from the above keyup function or any other time that the viewValue is updated and parses it for storage in the ngModel
+            console.warn('setting up parsers', ngModel, ngModel.$parsers, ngModel.$formatters);
             ngModel.$parsers.push(_sanitize);
             ngModel.$parsers.unshift(_ensureContentWrapped);
             // because textAngular is bi-directional (which is awesome) we need to also sanitize values going in from the server
             ngModel.$formatters.push(_sanitize);
             ngModel.$formatters.unshift(_ensureContentWrapped);
             ngModel.$formatters.unshift(function(value){
+                console.log('pushed to undo', value);
                 return ngModel.$undoManager.push(value || '');
             });
+          console.warn('did set up parsers', ngModel, ngModel.$parsers, ngModel.$formatters);
 
             //this code is used to update the models when data is entered/deleted
             if(_isInputFriendly){
@@ -3630,20 +3635,20 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
                                         // on Safari, the browser ignores the Shift+Enter and acts just as an Enter Key
                                         // For an LI: We see: LI p <br>
                                         // For a P: We see: P p <br>
-                                        if((tagName === attrs.taDefaultWrap ||
-                                            tagName === 'li' ||
-                                            tagName === 'pre' ||
-                                            tagName === 'div') &&
-                                            !/.+<br><br>/.test(selection.innerHTML.trim())) {
-                                            var ps = selection.previousSibling;
-                                            //console.log('wrong....', ps);
-                                            // we need to remove this selection and fix the previousSibling up...
-                                            if (ps) {
-                                                ps.innerHTML = ps.innerHTML + '<br><br>';
-                                                angular.element(selection).remove();
-                                                taSelection.setSelectionToElementEnd(ps);
-                                            }
-                                        }
+                                        // if((tagName === attrs.taDefaultWrap ||
+                                        //     tagName === 'li' ||
+                                        //     tagName === 'pre' ||
+                                        //     tagName === 'div') &&
+                                        //     !/.+<br><br>/.test(selection.innerHTML.trim())) {
+                                        //     var ps = selection.previousSibling;
+                                        //     //console.log('wrong....', ps);
+                                        //     // we need to remove this selection and fix the previousSibling up...
+                                        //     if (ps) {
+                                        //         ps.innerHTML = ps.innerHTML + '<br><br>';
+                                        //         angular.element(selection).remove();
+                                        //         taSelection.setSelectionToElementEnd(ps);
+                                        //     }
+                                        // }
                                     }
                                 }
                                 var val = _compileHtml();

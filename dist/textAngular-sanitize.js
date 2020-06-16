@@ -153,9 +153,11 @@ function $SanitizeProvider() {
 }
 
 function sanitizeText(chars) {
+  console.log('sanitize before', chars);
   var buf = [];
   var writer = htmlSanitizeWriter(buf, angular.noop);
   writer.chars(chars);
+  console.log('sanitize after', buf.join(''));
   return buf.join('');
 }
 
