@@ -752,9 +752,9 @@ angular.module('textAngular.DOM', ['textAngular.factories'])
                             __h = __h.replace(/<span><\/span>/i, '');
                         }
                         //console.log('inner whole container', selectedElement.childNodes);
-                        _innerNode = '<div>' + __h + '</div>';
-                        selectedElement.innerHTML = _innerNode;
-                        taSelection.setSelectionToElementEnd(selectedElement.childNodes[0]);
+                        // _innerNode = '<div>' + __h + '</div>';
+                        selectedElement.innerHTML =  __h;
+                        taSelection.setSelectionToElementEnd(selectedElement.querySelector('p'));
                         selectedElement = taSelection.getSelectionElement();
                     } else if (selectedElement.tagName.toLowerCase() === 'span' &&
                         ourSelection && ourSelection.start &&
@@ -1860,7 +1860,6 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
             if(!ngModelOptions.$options) ngModelOptions.$options = {}; // ng-model-options support
 
             var _ensureContentWrapped = function(value) {
-                console.log('ensure content wrapped', value);
                 if (_taBlankTest(value)) return value;
                 var domTest = angular.element("<div>" + value + "</div>");
                 //console.log('domTest.children().length():', domTest.children().length);
@@ -2052,7 +2051,6 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
             // catch DOM XSS via taSanitize
             // Sanitizing both ways is identical
             var _sanitize = function(unsafe){
-                console.log('sanitize content', unsafe);
                 return (ngModel.$oldViewValue = taSanitize(taFixChrome(unsafe, _keepStyles), ngModel.$oldViewValue, _disableSanitizer));
             };
 
@@ -2061,17 +2059,14 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
                 return !_taBlankTest(modelValue || viewValue);
             };
             // parsers trigger from the above keyup function or any other time that the viewValue is updated and parses it for storage in the ngModel
-            console.warn('setting up parsers', ngModel, ngModel.$parsers, ngModel.$formatters);
             ngModel.$parsers.push(_sanitize);
             ngModel.$parsers.unshift(_ensureContentWrapped);
             // because textAngular is bi-directional (which is awesome) we need to also sanitize values going in from the server
             ngModel.$formatters.push(_sanitize);
             ngModel.$formatters.unshift(_ensureContentWrapped);
             ngModel.$formatters.unshift(function(value){
-                console.log('pushed to undo', value);
                 return ngModel.$undoManager.push(value || '');
             });
-          console.warn('did set up parsers', ngModel, ngModel.$parsers, ngModel.$formatters);
 
             //this code is used to update the models when data is entered/deleted
             if(_isInputFriendly){

@@ -247,9 +247,9 @@ angular.module('textAngular.DOM', ['textAngular.factories'])
                             __h = __h.replace(/<span><\/span>/i, '');
                         }
                         //console.log('inner whole container', selectedElement.childNodes);
-                        _innerNode = '<div>' + __h + '</div>';
-                        selectedElement.innerHTML = _innerNode;
-                        taSelection.setSelectionToElementEnd(selectedElement.childNodes[0]);
+                        // _innerNode = '<div>' + __h + '</div>';
+                        selectedElement.innerHTML =  __h;
+                        taSelection.setSelectionToElementEnd(selectedElement.querySelector('p'));
                         selectedElement = taSelection.getSelectionElement();
                     } else if (selectedElement.tagName.toLowerCase() === 'span' &&
                         ourSelection && ourSelection.start &&

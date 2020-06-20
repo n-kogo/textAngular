@@ -216,6 +216,15 @@ module.exports = function (grunt) {
 				wrap: false,
 				preserveComments: 'some'
 			},
+      //DEBUG OPTIONS
+      // options: {
+      //   mangle: false,
+      //   beautify: true,
+      //   compress: false,
+      //   sourceMapIncludeSources: true,
+      //   wrap: false,
+      //   preserveComments: 'some'
+      // },
 			my_target: {
 				files: {
 					'dist/textAngular-rangy.min.js': ['bower_components/rangy/rangy-core.js', 'bower_components/rangy/rangy-selectionsaverestore.js'],
